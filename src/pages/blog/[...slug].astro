@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { formatDate, getPostUrl, readingTime, sortPosts } from '../../utils';
+import { SITE } from '../../config';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+const index = posts.findIndex((item) => item.id === post.id);
+const previous = posts[index + 1];
+const next = posts[index - 1];
+---
+<BaseLayout title={`${post.data.title} — ${SITE.name}`} description={post.data.description} articleDate={post.data.pubDate} image={post.data.cover}>
+  <div class="container">
+    <article>
+      <header class="article-header"><Breadcrumbs items={[{ label: '文章', href: '/blog/' }, { label: post.data.title }]} /><a class="eyebrow" href={`/categories/${encodeURIComponent(post.data.category)}/`}>{post.data.category}</a><h1>{post.data.title}</h1><div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate, { year: 'numeric', month: 'long', day: 'numeric' })}</time><span class="meta-separator">/</span>{readingTime(post.body)} 分钟阅读</div><div class="article-tags">{post.data.tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>#{tag}</a>)}</div></header>
+      {headings.some((h) => h.depth >= 2 && h.depth <= 3) && <details class="mobile-toc"><summary>本篇目录</summary><nav aria-label="文章目录">{headings.filter((h) => h.depth >= 2 && h.depth <= 3).map((h) => <a class:list={{ nested: h.depth === 3 }} href={`#${h.slug}`}>{h.text}</a>)}</nav></details>}
+      <div class="article-layout"><div class="prose"><Content /></div>{headings.length > 0 && <aside class="toc"><strong>本篇目录</strong><nav aria-label="文章目录">{headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3).map((heading) => <a class:list={{ nested: heading.depth === 3 }} href={`#${heading.slug}`}>{heading.text}</a>)}</nav></aside>}</div>
+      <div class="article-tools"><a href="/blog/">← 返回文章列表</a><button class="copy-link" type="button" aria-live="polite" data-copy-link>复制文章链接</button></div>
+      {(previous || next) && <nav class="article-nav" aria-label="相邻文章">{previous ? <a href={getPostUrl(previous)}><small>上一篇</small><strong>{previous.data.title}</strong></a> : <span></span>}{next ? <a class="next" href={getPostUrl(next)}><small>下一篇</small><strong>{next.data.title}</strong></a> : <span></span>}</nav>}
+    </article>
+  </div>
+</BaseLayout>
+<script>
+  import { initArticle } from '../../scripts/article';
+  initArticle();
+</script>

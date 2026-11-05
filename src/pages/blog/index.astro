@@ -1,0 +1,7 @@
+---
+import BlogListing from '../../components/BlogListing.astro';
+import { getPublishedPosts } from '../../utils';
+const allPosts = await getPublishedPosts();
+---
+<BlogListing allPosts={allPosts} />
+

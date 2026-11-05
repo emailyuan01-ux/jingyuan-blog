@@ -1,0 +1,14 @@
+---
+import BlogListing from '../../../components/BlogListing.astro';
+import { getPublishedPosts, PAGE_SIZE } from '../../../utils';
+
+export async function getStaticPaths() {
+  const allPosts = await getPublishedPosts();
+  const pages = Math.ceil(allPosts.length / PAGE_SIZE);
+  return Array.from({ length: Math.max(0, pages - 1) }, (_, i) => ({
+    params: { page: String(i + 2) }, props: { allPosts, current: i + 2 }
+  }));
+}
+const { allPosts, current } = Astro.props;
+---
+<BlogListing allPosts={allPosts} current={current} />

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../config';
+---
+<BaseLayout title={`搜索 — ${SITE.name}`} description="本地搜索文章标题、摘要和正文。" noindex>
+  <div class="container">
+    <header class="page-header"><Breadcrumbs items={[{ label: '搜索' }]} /><div class="eyebrow">Search</div><h1>搜索文章</h1><p>沿着一个词，找回曾经的思考。搜索在你的浏览器中完成。</p></header>
+    <form class="search-box" data-search-form role="search">
+      <label class="sr-only" for="search-query">搜索关键词</label>
+      <input id="search-query" type="search" name="q" placeholder="输入标题、摘要或正文关键词…" autocomplete="off" maxlength="150" />
+      <button type="submit">搜索</button>
+    </form>
+    <p class="empty" data-search-status role="status" aria-live="polite">输入关键词开始搜索。</p>
+    <div data-search-results></div>
+    <noscript><p>本地搜索需要 JavaScript。你也可以<a href="/archives/">按时间浏览归档</a>。</p></noscript>
+  </div>
+</BaseLayout>
+<script>
+  import { initSearch } from '../scripts/search';
+  initSearch();
+</script>
+

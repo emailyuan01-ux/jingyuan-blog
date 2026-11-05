@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+---
+<BaseLayout title="关于 — Jingyuan" description="关于 Jingyuan 个人博客的介绍。">
+  <div class="container">
+    <header class="page-header"><Breadcrumbs items={[{ label: '关于' }]} /><div class="eyebrow">About</div><h1>关于这个空间</h1><p>给思考留一个可以回来的地方。</p></header>
+    <div class="about-copy">
+      <p>你好，欢迎来到 Jingyuan。这是一个正在慢慢生长的个人网站，记录那些在日常生活中偶然浮现、又值得被认真对待的想法。</p>
+      <p>这里会放置读书笔记、技术记录、社会观察、旅行片段和一些还没有想清楚的思考。文章不追求频繁更新，只希望每一次留下的文字，都能在未来重新阅读时带来一点回响。</p>
+      <div class="note">这里的个人经历与介绍仍在整理中。你可以直接编辑 <code>src/pages/about.astro</code>，换成自己的故事。</div>
+      <p>如果你也喜欢独立博客、长期主义和清晰的文字，欢迎常来看看。</p>
+    </div>
+  </div>
+</BaseLayout>

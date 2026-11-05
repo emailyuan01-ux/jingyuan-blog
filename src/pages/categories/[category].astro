@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { SITE } from '../../config';
+import { getPublishedPosts, getCategories } from '../../utils';
+export async function getStaticPaths() {
+  const allPosts = await getPublishedPosts();
+  return getCategories(allPosts).map((category) => ({
+    params: { category }, props: { category, posts: allPosts.filter((post) => post.data.category === category) }
+  }));
+}
+const { category, posts } = Astro.props;
+---
+<BaseLayout title={`${category} — ${SITE.name}`} description={`${category}主题下的文章。`}>
+  <div class="container">
+    <header class="page-header"><Breadcrumbs items={[{ label: '分类', href: '/categories/' }, { label: category }]} /><div class="eyebrow">Category</div><h1>{category}</h1><p>{posts.length} 篇文章</p></header>
+    <div class="post-list">{posts.map((post) => <PostCard post={post} />)}</div>
+    {posts.length === 0 && <p class="empty">这个分类还没有文章，慢慢积累。</p>}
+    <a class="back-link" href="/blog/">← 返回全部文章</a>
+  </div>
+</BaseLayout>
+

@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getPublishedPosts, getCategories } from '../../utils';
+import { SITE } from '../../config';
+const posts = await getPublishedPosts();
+const categories = getCategories(posts);
+---
+<BaseLayout title={`分类 — ${SITE.name}`} description="按主题浏览文章。">
+  <div class="container">
+    <header class="page-header"><Breadcrumbs items={[{ label: '分类' }]} /><div class="eyebrow">Categories</div><h1>分类</h1><p>从不同的入口，浏览这些记录。</p></header>
+    <div class="list-grid">{categories.map((category, index) => {
+      const count = posts.filter((post) => post.data.category === category).length;
+      return <a class="category-card" href={`/categories/${encodeURIComponent(category)}/`}><span>{String(index + 1).padStart(2, '0')} / 主题</span><strong>{category}</strong><span>{count} 篇文章 →</span></a>;
+    })}</div>
+  </div>
+</BaseLayout>
+

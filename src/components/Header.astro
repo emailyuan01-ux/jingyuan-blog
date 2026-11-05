@@ -1,0 +1,54 @@
+---
+import { NAV_ITEMS, SITE } from '../config';
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="wordmark" href="/" aria-label={`${SITE.name} 首页`}>{SITE.name}<span class="wordmark-dot">.</span></a>
+    <nav class="desktop-nav" aria-label="主导航">
+      {NAV_ITEMS.map((item) => <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <div class="header-actions">
+      <a class="search-link" href="/search/" aria-label="搜索文章">搜索</a>
+      <button class="theme-toggle" type="button" aria-label="切换深色模式" aria-pressed="false" data-theme-toggle>
+        <span class="theme-icon" aria-hidden="true">◐</span>
+      </button>
+      <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="mobile-navigation" data-menu-toggle>☰</button>
+    </div>
+  </div>
+  <nav id="mobile-navigation" class="mobile-nav container" data-mobile-nav aria-label="移动端主导航" hidden>
+    {NAV_ITEMS.map((item) => <a href={item.href}>{item.label}</a>)}
+    <a href="/search/">搜索文章</a>
+  </nav>
+</header>
+<script>
+  const root = document.documentElement;
+  const themeButton = document.querySelector('[data-theme-toggle]');
+  const syncButton = () => {
+    const dark = root.dataset.theme === 'dark';
+    themeButton?.setAttribute('aria-pressed', String(dark));
+    themeButton?.setAttribute('aria-label', dark ? '切换浅色模式' : '切换深色模式');
+  };
+  syncButton();
+  themeButton?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch { /* 浏览器禁用存储时仍可切换 */ }
+    syncButton();
+  });
+  const menuButton = document.querySelector('[data-menu-toggle]');
+  const mobileNav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+  menuButton?.addEventListener('click', () => {
+    const open = menuButton.getAttribute('aria-expanded') !== 'true';
+    if (mobileNav) mobileNav.hidden = !open;
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && mobileNav && !mobileNav.hidden) {
+      mobileNav.hidden = true;
+      menuButton?.setAttribute('aria-expanded', 'false');
+      (menuButton as HTMLButtonElement)?.focus();
+    }
+  });
+</script>

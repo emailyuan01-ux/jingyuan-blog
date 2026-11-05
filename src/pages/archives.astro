@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { formatDate, getPostUrl, sortPosts } from '../utils';
+const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+const years = [...new Set(posts.map((post) => post.data.pubDate.getFullYear()))];
+---
+<BaseLayout title="归档 — Jingyuan" description="按时间回顾 Jingyuan 的文章。"><div class="container"><header class="page-header"><Breadcrumbs items={[{ label: '归档' }]} /><div class="eyebrow">Archives</div><h1>归档</h1><p>文章按照时间排列，方便回头看看曾经想过什么。</p></header>{years.map((year) => <section class="archive-year"><h2>{year}</h2>{[...new Set(posts.filter((post) => post.data.pubDate.getFullYear() === year).map((post) => post.data.pubDate.getMonth()))].sort((a,b)=>b-a).map((month) => <div><div class="archive-month">{month + 1} 月</div><div class="archive-list">{posts.filter((post) => post.data.pubDate.getFullYear() === year && post.data.pubDate.getMonth() === month).map((post) => <a class="archive-item" href={getPostUrl(post)}><span>{post.data.title}</span><time>{formatDate(post.data.pubDate, { month: 'short', day: 'numeric' })}</time></a>)}</div></div>)}</section>)}</div></BaseLayout>

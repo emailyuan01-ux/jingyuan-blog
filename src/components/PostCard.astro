@@ -1,0 +1,11 @@
+---
+import type { BlogPost } from '../utils';
+import { formatDate, getPostUrl } from '../utils';
+const { post, compact = false } = Astro.props as { post: BlogPost; compact?: boolean };
+---
+<article class:list={["post-card", { compact }]}>
+  <div class="post-card-meta"><time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time><span class="meta-separator">/</span><a href={`/categories/${encodeURIComponent(post.data.category)}/`}>{post.data.category}</a></div>
+  <h3><a href={getPostUrl(post)}>{post.data.title}</a></h3>
+  <p>{post.data.description}</p>
+  {!compact && <div class="post-tags">{post.data.tags.slice(0, 3).map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>#{tag}</a>)}</div>}
+</article>

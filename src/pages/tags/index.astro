@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+---
+<BaseLayout title="标签 — Jingyuan" description="按标签浏览 Jingyuan 的文章。"><div class="container"><header class="page-header"><Breadcrumbs items={[{ label: '标签' }]} /><div class="eyebrow">Tags</div><h1>标签</h1><p>把有相似气质的文章放在一起。</p></header><div class="list-grid">{tags.map((tag) => <a class="tag-card" href={`/tags/${encodeURIComponent(tag)}/`}><span>标签</span><strong>#{tag}</strong><span>{posts.filter((post) => post.data.tags.includes(tag)).length} 篇文章 →</span></a>)}</div></div></BaseLayout>

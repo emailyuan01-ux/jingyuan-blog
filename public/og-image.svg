@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f8f8f5"/>
+  <path d="M90 90h1020M90 540h1020" stroke="#deded8"/>
+  <text x="90" y="250" font-family="Georgia, serif" font-size="106" font-weight="700" fill="#20201e">Jingyuan<tspan fill="#b34a29">.</tspan></text>
+  <text x="96" y="340" font-family="Arial, sans-serif" font-size="30" fill="#777772">Personal Notes &amp; Thoughts</text>
+  <text x="96" y="460" font-family="Georgia, serif" font-size="26" fill="#20201e">记录思考，整理认知，留下时间的痕迹。</text>
+</svg>
